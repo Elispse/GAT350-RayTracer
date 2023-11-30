@@ -1,6 +1,8 @@
 #include "Renderer.h"
 #include "Canvas.h"
 #include "Random.h"
+#include "Camera.h"
+#include "Scene.h"
 #include <iostream>
 
 int main(int args, char* argv[])
@@ -13,10 +15,16 @@ int main(int args, char* argv[])
 	// initialize renderer
 	renderer.Initialize();
 	// create renderer window with size of 400, 300
-	renderer.CreateWindow("New Window", 400, 300);
+	renderer.CreateWindow("Ray tracer", 400, 300);
 
 	Canvas canvas(400, 300, renderer);
 
+	float aspectRatio = canvas.GetSize().x / (float)canvas.GetSize().y;
+	std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 0, 1 }, glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, 70.0f, aspectRatio);
+
+	Scene scene({0, 0, 0}, {1, 1, 1});
+	scene.SetCamera(camera);
+	
 	bool quit = false;
 	while (!quit)
 	{
@@ -37,12 +45,9 @@ int main(int args, char* argv[])
 			break;
 		}
 		canvas.Clear({ 0, 0, 0, 1 });
-		for (int i = 0; i < 1000; i++)
-		{
-			canvas.DrawPoint({random01() * 400, random01() * 300}, {random01(), random01(), random01(), 1});
-		}
-		//scene.Render(canvas);
+		scene.Render(canvas);
 		canvas.Update();
+
 		renderer.PresentCanvas(canvas);
 	}
 	// shutdown renderer

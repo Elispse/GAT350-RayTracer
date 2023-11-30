@@ -11,7 +11,7 @@ Canvas::Canvas(int width, int height, const Renderer& renderer)
 
 Canvas::~Canvas()
 {
-	if (!m_texture)
+	if (m_texture)
 	{
 		SDL_DestroyTexture(m_texture);
 	}
